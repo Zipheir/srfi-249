@@ -2,7 +2,7 @@
   (syntax-rules ()
     ((assert-type loc test . args)
      (unless test
-       (error loc "type check failed" 'expr . args)))))
+       (error loc "type check failed" 'test . args)))))
 
 (define-record-type <restarter>
   (make-raw-restarter tag description invoker)
