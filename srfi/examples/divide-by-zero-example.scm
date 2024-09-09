@@ -8,9 +8,8 @@
   (restarters condition-restarters)) ; list of restarters
 
 ;; Evaluates *thunk*, restarting interactively if a restartable
-;; assertion violation is raised. The current ambient restarters are
-;; extended with *restarters* and with a new restarter that aborts
-;; *thunk*'s computation.
+;; assertion violation is raised. The *restarters* list is extended
+;; with a new restarter that aborts *thunk*'s computation.
 (define (with-interactive-restart-handler restarters thunk)
   (guard (con
           ((restartable-assertion-violation? con)
