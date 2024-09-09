@@ -9,8 +9,9 @@
 
 ;; Evaluates *thunk*, restarting interactively if a restartable
 ;; assertion violation is raised. The current ambient restarters are
-;; extended with a new restarter that aborts *thunk*'s computation.
-(define (with-interactive-restart thunk)
+;; extended with *restarters* and with a new restarter that aborts
+;; *thunk*'s computation.
+(define (with-interactive-restart-handler restarters thunk)
   (guard (con
           ((restartable-assertion-violation? con)
            (restart-interactively (condition-restarters con))))
@@ -19,7 +20,7 @@
        (let ((aborter (make-restarter 'abort
                                       '("Abort the current computation")
                                       abort)))
-         (with-restarters (list aborter) thunk))))))
+         (with-restarters (cons aborter restarters) thunk))))))
 
 (define (assertion-violation/restarters)
   (raise-continuable
@@ -43,13 +44,11 @@
                     '("Return the numerator.")
                     (lambda () num)))
 
-  (with-interactive-restart
+  (with-interactive-restart-handler
+   (list return-zero-restarter
+         return-numerator-restarter
+         return-value-restarter)
    (lambda ()
-     (with-restarters
-      (list return-zero-restarter
-            return-numerator-restarter
-            return-value-restarter)
-      (lambda ()
-        (if (zero? denom)
-            (assertion-violation/restarters)
-            (/ num denom)))))))
+     (if (zero? denom)
+         (assertion-violation/restarters)
+         (/ num denom)))))
