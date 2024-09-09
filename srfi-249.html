@@ -118,7 +118,8 @@ zero:</p>
 
 (define return-value-restarter
   (make-restarter 'return-value
-    &#39;(&quot;Return a specified value&quot; &quot;The value to return&quot;)))</code></pre>
+    &#39;(&quot;Return a specified value&quot; &quot;The value to return&quot;)
+    (lambda (x) x)))</code></pre>
 <p><code>(restarter? </code><em>obj</em><code>)</code> →
 <em>boolean</em></p>
 <p>Returns <code>#t</code> if <em>obj</em> is a restarter and
