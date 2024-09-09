@@ -5,8 +5,11 @@
 (define-condition-type &restartable &assertion
   make-restartable-assertion-violation
   restartable-assertion-violation?
-  (restarters condition-restarters))
+  (restarters condition-restarters)) ; list of restarters
 
+;; Evaluates *thunk*, restarting interactively if a restartable
+;; assertion violation is raised. The current ambient restarters are
+;; extended with a new restarter that aborts *thunk*'s computation.
 (define (with-interactive-restart thunk)
   (guard (con
           ((restartable-assertion-violation? con)
@@ -24,14 +27,16 @@
 
 (define return-zero-restarter
   (make-restarter 'return-zero
-   '("Return zero.")
-   (lambda () 0)))
+                  '("Return zero.")
+                  (lambda () 0)))
 
 (define return-value-restarter
   (make-restarter 'return-value
                   '("Return a specified value" "The value to return")
                   (lambda (x) x)))
 
+;; Divide *num* by *denom*. Raises a restartable assertion violation
+;; condition if *denom* is zero.
 (define (divide num denom)
   (define return-numerator-restarter
     (make-restarter 'return-numerator
