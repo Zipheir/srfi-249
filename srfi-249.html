@@ -99,12 +99,12 @@ restart a computation with associated interactive prompters.</p>
             (x (if (number? x)
                    x
                    (get-single-argument-from-restart
-                    x
+                    number?
                     (make-bad-x-condition x))))
             (y (if (pred-y y)
                    y
                    (get-single-argument-from-restart
-                    y
+                    pred-y
                     (make-bad-y-condition y)))))
        ;; Actual procedure body!
        (list (number-&gt;string x) (string-&gt;number y))))))
