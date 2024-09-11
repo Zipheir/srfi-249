@@ -66,8 +66,7 @@ restart a computation with associated interactive prompters.</p>
     <pre><code>(define (f x y)
   (assert (number? x))
   (assert (string? y))
-  (list (number-&gt;string x) (string-&gt;number y)))
-    </code></pre>
+  (list (number-&gt;string x) (string-&gt;number y)))</code></pre>
 
     <p>We’d like to fit this with restarts which allow an invalid
     <var>x</var> or <var>y</var> argument to be replaced by the caller.
@@ -115,8 +114,7 @@ restart a computation with associated interactive prompters.</p>
                      pred-y
                      (make-bad-y-condition y)))))))
      ;; Actual procedure body!
-     (list (number-&gt;string x) (string-&gt;number y))))))
-    </code></pre>
+     (list (number-&gt;string x) (string-&gt;number y))))))</code></pre>
 
     <p>(Thanks to MNW for helping to work this out.)</p>
 
