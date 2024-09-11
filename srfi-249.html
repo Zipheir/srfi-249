@@ -40,6 +40,79 @@ restart a computation with associated interactive prompters.</p>
 
 <h2 id="issues">Issues</h2>
 
+<ul>
+  <li>
+    <p>The fit between restarters and the Scheme exception system is
+    awkward. It’s natural to invoke restarts in response to exceptions,
+    but only continuable exceptions can be restarted.</p>
+
+    <p>I think the author of a restartable process must make the following
+    contract: if a problem is restartable, it will be signaled by a
+    continuable exception. Even then, there are complications:
+    the values returned by the restarter will come through
+    <code>raise-continuable</code>, and the number and type of these
+    values may not match the process’s expectations.</p>
+
+    <p>In any case, this doesn’t make it any easier to provide restarts
+    for exceptions raised by the Scheme system, since these are usually
+    non-continuable. This leads to …</p>
+  </li>
+
+  <li>
+    <p>Adapting existing procedures to provide restarts is hard. Marc
+    Nieper-Wißkirchen gives the apparently simple problem of allowing
+    argument substitution in the following procedure:</p>
+
+    <pre><code>(define (f x y)
+      (assert (number? x))
+      (assert (string? y))
+      (list (number-&gt;string x) (string-&gt;number y)))
+    </code></pre>
+
+    <p>We’d like to fit this with restarts which allow an invalid
+    <var>x</var> or <var>y</var> argument to be replaced by the caller.
+    With the current restarter model, this turns out to be a tedious
+    transformation that is quite difficult to get right. An attempt
+    follows:</p>
+
+    <pre><code>;; Define bad-x-condition and bad-y-condition …
+
+    (define (get-single-argument-from-restart pred condition)
+      (let check-loop ()
+        (call-with-values
+         (lambda () (raise-continuable condition))
+         (case-lambda
+           ((x) (if (pred x) x (check-loop)))
+           (xs (check-loop))))))  ; try again
+
+    (define (f x y)
+      (with-restarters
+       (list (make-restarter 'replace-x
+               '("Replace the x argument." "The number to use.")
+               values)
+             (make-restarter 'replace-y
+               '("Replace the y argument." "The string to use.")
+               values))
+       (lambda ()
+         (let* ((pred-y (lambda (z) (and (string? z)
+                                         (string-&gt;number z))))
+                (x (if (number? x)
+                       x
+                       (get-single-argument-from-restart
+                        x
+                        (make-bad-x-condition x))))
+                (y (if (pred-y y)
+                       y
+                       (get-single-argument-from-restart
+                        y
+                        (make-bad-y-condition y)))))
+           ;; Actual procedure body!
+           (list (number-&gt;string x) (string-&gt;number y))))))
+    </code></pre>
+
+    <p>(Thanks to MNW for helping to work this out.)</p>
+  </li>
+</ul>
 
 <h2 id="rationale">Rationale</h2>
 <p>An effective and flexible system for gracefully handling and
