@@ -4,7 +4,6 @@
 (import (rnrs base)
         (rnrs exceptions)
         (rnrs io ports)
-        (only (srfi :152 strings) string-split)
         (srfi :249 restarts))
 
 (define-condition-type &malformed-log-entry
