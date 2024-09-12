@@ -169,11 +169,9 @@ restart a computation with associated interactive prompters.</p>
         restarters used in the main example.</p>
       </li>
 
-      <li><p>A procedure, <code>get-single-argument-from-restart</code>,
-      is used to get a single, valid argument value from the restart.
-      This might be put into the restarter procedure itself, but
-      something of this sort is necessary when processing values
-      returned by restarters.</p></li>
+      <li><p><code>get-single-argument-from-restart</code> must “poll”
+      the handler until it gets a single, valid (checked by a predicate)
+      argument value.</p></li>
 
       <li><p><code>string-&gt;number</code> is called twice, the first
       time to check whether the value of <var>y</var> can be
