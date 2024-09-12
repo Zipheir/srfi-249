@@ -243,18 +243,18 @@ may be phrases or whole sentences.</p>
 zero:</p>
 
 <pre><code>(define return-zero-restarter
-  (make-restarter &#39;return-zero
-   &#39;(&quot;Return zero.&quot;)
+  (make-restarter 'return-zero
+   '("Return zero.")
    (lambda () 0)))
 
 (define return-numerator-restarter
-  (make-restarter &#39;return-numerator
-    &#39;(&quot;Return the numerator.&quot;)
+  (make-restarter 'return-numerator
+    '("Return the numerator.")
     (lambda () numerator)))
 
 (define return-value-restarter
   (make-restarter 'return-value
-    &#39;(&quot;Return a specified value&quot; &quot;The value to return&quot;)
+    '("Return a specified value" "The value to return")
     (lambda (x) x)))</code></pre>
 
 <p><code>(restarter? </code><var>obj</var><code>)</code> →
@@ -279,7 +279,7 @@ to mutate <var>list-of-strings</var> or any of its members.</p>
 
 <p>Access fields of <code>return-denominator-restarter</code>:</p>
 <pre><code>(restarter-tag return-denominator-restarter) → return-denominator
-(restarter-description return-denominator-restarter) → (&quot;Return the numerator.&quot;)</code></pre>
+(restarter-description return-denominator-restarter) → ("Return the numerator.")</code></pre>
 
 <p><code>(restart </code><var>restarter</var> <var>arg</var>
 …<code>)</code> →
