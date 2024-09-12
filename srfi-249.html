@@ -247,11 +247,6 @@ zero:</p>
    '("Return zero.")
    (lambda () 0)))
 
-(define return-numerator-restarter
-  (make-restarter 'return-numerator
-    '("Return the numerator.")
-    (lambda () numerator)))
-
 (define return-value-restarter
   (make-restarter 'return-value
     '("Return a specified value" "The value to return")
