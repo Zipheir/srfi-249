@@ -147,10 +147,10 @@ restart a computation with associated interactive prompters.</p>
       something of this sort is necessary when processing values
       returned by restarters.</p></li>
 
-      <li><p><code>string->number</code> is called twice, the first
+      <li><p><code>string-&gt;number</code> is called twice, the first
       time to check whether the value of <var>y</var> can be
       converted to a number. This only works as a test because of
-      <code>string->number</code>’s semantics. If it raised a
+      <code>string-&gt;number</code>’s semantics. If it raised a
       (non-continuable) exception instead of returning false, we
       could not restart with a new value at all. (i.e. this is
       a brittle approach that can’t be used with all procedures.)
