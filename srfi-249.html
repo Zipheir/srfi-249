@@ -173,17 +173,17 @@ Dylan’s restart systems, more in the spirit of Scheme, however. It is
 historically related to MIT Scheme’s system.</p>
 
 <p>One important feature for a restart system to provide is
-interactivity. Though purely programmatic condition recovery is useful,
-it is well-acknowledged by the designers and users of Common Lisp’s
-condition system that the ability to <em>interactively</em> choose a
-method of recovery for a condition is useful.  This ability, built-in to the Common
-Lisp language, is one of the primary reasons for the power of Common
-Lisp development and debugging environments. Though much of the baggage
-in Common Lisp’s restart system was deemed unnecessary for this
-proposal, interactivity is one crucial feature that was included. In
-this SRFI, the interactivity is provided by an <dfn>interactor
-procedure</dfn> that by default is provided by the implementation, but
-can be overridden by the user.</p>
+interactivity. Though purely programmatic condition recovery is
+useful, it is well-acknowledged by the designers and users of Common
+Lisp’s condition system that the ability to <em>interactively</em>
+choose a method of recovery for a condition is useful. This ability,
+built-in to the Common Lisp language, is one of the primary reasons
+for the power of Common Lisp development and debugging environments.
+Though much of the baggage in Common Lisp’s restart system was deemed
+unnecessary for this proposal, interactivity is one crucial feature
+that was included. In this SRFI, the interactivity is provided by an
+<dfn>interactor procedure</dfn> that by default is provided by the
+implementation, but can be overridden by the user.</p>
 
 <p>One major difference between the CL and Scheme condition systems is
 that when a CL handler exits to its caller, the next outer handler is
@@ -201,15 +201,17 @@ handling returns from exceptions.</p>
 fields:</p>
 
 <dl>
-<dt>tag</dt>
-<dd>a symbol identifying this restarter</dd>
-<dt>description</dt>
-<dd>a list of strings that describes the method
-of recovery and the values, if any, needed for recovery</dd>
-<dt>invoker</dt>
-<dd>a procedure that actually performs the recovery;
-the number of arguments it expects is equal to the length of
-<var>description</var> minus 1.</dd>
+  <dt>tag</dt>
+  <dd>a symbol identifying this restarter</dd>
+
+  <dt>description</dt>
+  <dd>a list of strings that describes the method
+  of recovery and the values, if any, needed for recovery</dd>
+  <dt>invoker</dt>
+
+  <dd>a procedure that actually performs the recovery;
+  the number of arguments it expects is equal to the length of
+  <var>description</var> minus 1.</dd>
 </dl>
 
 <p>Restarters can be available in one of two ways. They can be
@@ -324,7 +326,8 @@ compound object. If no such restarter is found in <var>restarters</var>,
 the value of <code>(ambient-restarters)</code> is searched instead.
 Failing that as well, <code>#f</code> is returned.</p>
 
-<p><code>(collect-restarters </code><var>restarters</var><code>)</code></p>
+<p><code>(collect-restarters
+</code><var>restarters</var><code>)</code></p>
 
 <p>The argument <var>restarters</var> has the same semantics as the
 <var>restarters</var> argument of <code>find-restarter</code>. All
@@ -371,7 +374,8 @@ What is the value you wish to use? 32</code></pre>
 → <span class="type-meta">values</span> (may not return)</p>
 
 <p>Equivalent to
-<code>((interactor) (collect-restarters </code><var>restarters</var><code>))</code></p>
+<code>((interactor) (collect-restarters
+</code><var>restarters</var><code>))</code></p>
 
 <h3 id="standard-restart-tags">Standard restart tags</h3>
 
@@ -379,52 +383,43 @@ What is the value you wish to use? 32</code></pre>
 protocols:</p>
 
 <dl>
-<dt class="tag-name">abort</dt>
+  <dt class="tag-name">abort</dt>
 
-<dd>
-<p>Completely aborts the computation, usually returning to some sort of
-initial user input such as a REPL. The invoker of an <code>abort</code>
-restarter accepts zero arguments, is typically an ambient restarter, and
-normally does not return.</p>
-</dd>
+  <dd><p>Completely aborts the computation, usually returning to
+  some sort of initial user input such as a REPL. The invoker of an
+  <code>abort</code> restarter accepts zero arguments, is typically an
+  ambient restarter, and normally does not return.</p></dd>
 
-<dt class="tag-name">ignore</dt>
+  <dt class="tag-name">ignore</dt>
 
-<dd>
-<p>Ignores the condition and proceeds. The invoker of an
-<code>ignore</code> restarter accepts zero arguments, is typically an
-ambient restarter, and normally returns an unspecified value.</p>
-</dd>
+  <dd><p>Ignores the condition and proceeds. The invoker of an
+  <code>ignore</code> restarter accepts zero arguments, is typically an
+  ambient restarter, and normally returns an unspecified value.</p></dd>
 
-<dt class="tag-name">retry</dt>
+  <dt class="tag-name">retry</dt>
 
-<dd>
-<p>Simply retries a whole computation from a certain point, with no
-explicitly altered inputs. Some implicit environmental changes are
-expected to have taken place. The invoker of a <code>retry</code>
-restarter accepts zero arguments, may or may not be an ambient
-restarter, and normally returns an unspecified value.</p>
-</dd>
+  <dd><p>Simply retries a whole computation from a certain point, with
+  no explicitly altered inputs. Some implicit environmental changes are
+  expected to have taken place. The invoker of a <code>retry</code>
+  restarter accepts zero arguments, may or may not be an ambient
+  restarter, and normally returns an unspecified value.</p></dd>
 
-<dt class="tag-name">use-value</dt>
+  <dt class="tag-name">use-value</dt>
 
-<dd>
-<p>Retries a computation with a given input value substituted for some
-invalid value in the original input. The invoker of a
-<code>use-value</code> restarter accepts at least one argument, the new
-value(s) to substitute. It is may or may not be an ambient restarter,
-and normally returns an unspecified value.</p>
-</dd>
+  <dd><p>Retries a computation with a given input value substituted
+  for some invalid value in the original input. The invoker of a
+  <code>use-value</code> restarter accepts at least one argument,
+  the new value(s) to substitute. It is may or may not be an ambient
+  restarter, and normally returns an unspecified value.</p></dd>
 
-<dt class="tag-name">store-value</dt>
+  <dt class="tag-name">store-value</dt>
 
-<dd>
-<p>These restarter tag is in every respect like <code>use-value</code>
-restarters except that it is meant to store the input value somewhere,
-so that the old one is completely replaced, rather than just using the
-input value temporarily and possibly accidentally reusing the old value
-later and signaling another error.</p>
-</dd>
+  <dd><p>These restarter tag is in every respect like
+  <code>use-value</code> restarters except that it is meant to store the
+  input value somewhere, so that the old one is completely replaced,
+  rather than just using the input value temporarily and possibly
+  accidentally reusing the old value later and signaling another
+  error.</p></dd>
 </dl>
 
 <h2 id="additional-recommendations">Additional recommendations</h2>
